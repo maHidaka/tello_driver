@@ -33,8 +33,7 @@ class GamepadState:
 
     def parse_ps3_usb(self, msg):
         if len(msg.buttons) != 17 or len(msg.axes) != 6:
-            raise ValueError('Invalid number of buttons (%d) or axes (%d)' % (
-                len(msg.buttons), len(msg.axes)))
+            raise ValueError('Invalid number of buttons (%d) or axes (%d)' % (len(msg.buttons), len(msg.axes)))
         self.Cr = msg.buttons[0]
         self.Ci = msg.buttons[1]
         self.Tr = msg.buttons[2]
@@ -61,8 +60,7 @@ class GamepadState:
 
     def parse_ps3_usb2(self, msg):
         if len(msg.buttons) != 19 or len(msg.axes) != 27:
-            raise ValueError('Invalid number of buttons (%d) or axes (%d)' % (
-                len(msg.buttons), len(msg.axes)))
+            raise ValueError('Invalid number of buttons (%d) or axes (%d)' % (len(msg.buttons), len(msg.axes)))
         self.Select = msg.buttons[0]
         self.L3 = msg.buttons[1]
         self.R3 = msg.buttons[2]
@@ -87,14 +85,38 @@ class GamepadState:
         self.RY = msg.axes[3]
         self.RT = msg.axes[13]
 
+    def general(self, msg):
+        if len(msg.buttons) != 13 or len(msg.axes) != 8:
+            raise ValueError('Invalid number of buttons (%d) or axes (%d)' % (len(msg.buttons), len(msg.axes)))
+        self.Select = msg.buttons[5]    #エージェントモードの切替
+        self.Start = msg.buttons[4]     #スピードアップモード
+        self.DU = msg.buttons[3]        #投げて離陸するモード
+        self.DD = msg.buttons[12]        #手のひらに着陸するモード
+        self.L2 = msg.buttons[2]         #手動離陸モード
+        self.R2 = msg.buttons[10]        #緊急停止
+        self.L1 = msg.buttons[1]         #自動離陸
+        self.R1 = msg.buttons[0]        #着陸
+        self.Tr = msg.buttons[8]         #ビデオモード
+        self.Cr = msg.buttons[9]         #フラットトリムモード
+        self.Sq = msg.buttons[11]         #フリップ
+        self.LX = msg.axes[3]
+        self.LY = msg.axes[4]
+        self.RX = msg.axes[1]
+        self.RY = msg.axes[0]
+
     def parse(self, msg):
         err = None
         try:
             return self.parse_ps3_usb(msg)
         except ValueError as e:
+
             err = e
         try:
             return self.parse_ps3_usb2(msg)
+        except ValueError as e:
+            err = e
+        try:
+            return self.general(msg)
         except ValueError as e:
             err = e
         raise err
