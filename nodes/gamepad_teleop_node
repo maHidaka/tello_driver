@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 import rospy
 from std_msgs.msg import Empty, UInt8, Bool
 from sensor_msgs.msg import Joy
@@ -91,11 +91,11 @@ class GamepadState:
         err = None
         try:
             return self.parse_ps3_usb(msg)
-        except ValueError, e:
+        except ValueError as e:
             err = e
         try:
             return self.parse_ps3_usb2(msg)
-        except ValueError, e:
+        except ValueError as e:
             err = e
         raise err
 
